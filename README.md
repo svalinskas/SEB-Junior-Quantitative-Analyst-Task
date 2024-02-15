@@ -49,4 +49,17 @@ To select a random subsample of the dataset, we can use pandas' sample() method 
 ```python
 subsample = df[df['balance'] > df['balance].median()].sample(frac=0.05)
 ```
-The condition within square brackets only selects rows with above-median 'balance' values, then 10% of it is randomly sampled.
+The condition within square brackets only selects rows with above-median 'balance' values, 10% of which are then randomly sampled.
+
+Next, let's filter the desired rows using a simple condition:
+```python
+clients_with_loan = df[df['loan'] == 'yes']
+```
+For more complex filtering, for example, clients with a balance, we can use the query method:
+```python
+queried_data = df.query['balance > 1000 & loan == 'no'
+```
+We can drop some unnecessary columns and rename others:
+```python
+df = df.drop(columns='day', 'month']
+df = df.rename(columns={'balance':'account_balance', 'y':'subscribed'}) 
