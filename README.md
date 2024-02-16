@@ -172,6 +172,9 @@ sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap='coolwarm', square=T
 plt.show()
 ```
 <img src="/correlation_heatmap.png" width="570" height="500">
+
 We can see that the correlation coefficients among the numerical variables are negligible, reducing concerns of multicollinearity and making it easier to interpret the features' impact if used in a model.
 
-Finally, let's also look at some categorical features.
+Finally, let's also look at some categorical features. For example, we may want to visualize the outcome distributions within different groups of categorical variables. For this, a bar plot with percentages may be appropriate:
+```python
+
