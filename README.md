@@ -153,7 +153,25 @@ import seaborn as sns
 ```
 First, we can try and see the relationship between, age, balance, and the subscription outcome variable. We can visualize their distributions and relationships using a pairplot:
 ```python
-data = pd.read_csv('/Users/sarunas/Desktop/bank-full.csv', delimiter = ';')
-plot_features = ['age', 'balance', 'y']
-pairplot_figure = sns.pairplot(data[plot_features], hue='y', plot_kws={'alpha':0.6, 's':30})
+data = pd.read_csv('/Users/sarunas/Desktop/bank-full.csv', delimiter = ';') # Read the .csv file and load it into a dataframe.
+plot_features = ['age', 'balance', 'y'] # Create a list of the features which we will put into the pairplot.
+pairplot_figure = sns.pairplot(data[plot_features], hue='y', plot_kws={'alpha':0.6, 's':30}) # Create a pairplot, indicating 'y' as the variable for different colors.
+plt.show()
 ```
+![](/age_balance_pairplot.png)
+- The top-left density plot for the age feature in both outcome groups shows the two curves overlapping significantly, indicating that age alone might not be a strong predictor of the outcome.
+- The bottom-right density plot for balance, similarly, shows significant overlap between the distributions of the two groups. Additionally, as is often the case with financial data such as account balance, the distributions are highly skewed with a long tail, indicating that a log-transformation may be appropriate for balance data if it's used as a feature in a model.
+- The top-right and bottom-left scatter plots show the relationship between age and balance within the two outcome groups. Ideally, if both of these features were strong predictors, we would see clear different-color clusters. In this case, however, the points are quite intermixed, showing that the relationship may be complex and not easily captured without further feature engineering.
+
+Next, we may look at the correlations among our numeric features in the dataset to see if there are any that might help identify multicollinearity:
+```python
+numeric_features = ['age', 'balance', 'duration', 'campaign', 'pdays'] # List of features.
+correlation_matrix = data[numeric_features].corr() # Calculate the correlation matrix.
+plt.figure(figsize=(10, 8)) # Set up the matplotlib figure
+sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap='coolwarm', square=True, linewidths=.5, cbar_kws={"shrink": .5}) # Draw the heatmap with the mask and correct aspect ratio
+plt.show()
+```
+<img src="/correlation_heatmap.png" width="570" height="500">
+We can see that the correlation coefficients among the numerical variables are negligible, reducing concerns of multicollinearity and making it easier to interpret the features' impact if used in a model.
+
+Finally, let's also look at some categorical features.
