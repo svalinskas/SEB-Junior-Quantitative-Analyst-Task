@@ -1,4 +1,4 @@
-# SEB Junior Quantitative Analyst Task
+![image](https://github.com/svalinskas/SEB-Junior-Quantitative-Analyst-Task/assets/123397350/3b524e32-8bb8-4618-9b05-326ab33c821f)# SEB Junior Quantitative Analyst Task
 
 Here are three tasks, each of which may be completed independently of the others:
 
@@ -104,3 +104,45 @@ technician        1252.632092  421.0  2548.544019  21  71  252.904962  1921319
 unemployed        1521.745971  529.0  3144.666754  21  66  288.543361   375972
 unknown           1772.357639  677.0  2970.288559  25  82  237.611111    68432
 ```
+Next, let's say we wanted to transform some variables. For example, instead of using a discrete age variable, we can create a boolean variable that indicates whether a customer's age is above the median or not:
+```python
+df_cleaned['above_median_age'] = df_cleaned['age'] > df['age'].median()
+```
+We can also use slightly more complex custom functions to create a variable with more categories. For example, we might wish to have a variable that indicates the balance quartile:
+```python
+def balance_quartile(account_balance):
+  if account_balance <= df_cleaned['account_balance'].quantile(0.25):
+    return 1
+  elif account_balance <= df_cleaned['account_balance'].quantile(0.50):
+    return 2
+  elif account_balance <= df_cleaned['account_balance'].quantile(0.75):
+    return 3
+  else:
+    return 4
+
+df_cleaned['balance_quartile'] = df_cleaned['account_balance'].apply(balance_quartile)
+print(df_cleaned['balance_quartile'].head())
+0    4
+1    1
+2    1
+3    4
+4    1
+```
+We see that our function works and creates a new column that shows an integer indicating which quartile the customer's account balance is in.
+
+Finally, we might want to sort our dataset by several variables at once and in different orders:
+```python
+df_sorted = df_cleaned.sort_values(by=['education', 'age'], ascending=[True, False], na_position='last')
+print(df_sorted[['education', 'age']].head())
+      education  age
+33699   primary   95
+43194   primary   90
+42574   primary   89
+44892   primary   89
+44669   primary   88
+```
+The dataset is thus sorted by education in ascending order, by age in descending order within each education group, and missing values are placed at the end within each sorting.
+
+## Data Visualization Task
+
+Let's return to the original dataset and visualize some of its data.
