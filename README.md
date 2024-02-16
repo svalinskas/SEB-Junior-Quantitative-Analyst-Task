@@ -241,3 +241,6 @@ plt.title('Receiver Operating Characteristic')
 plt.legend(loc="lower right")
 plt.show()
 ```
+![](/roc_curve.png)
+
+We can see from the visualization an ROC curve significantly above the no-skill classifier dashed line, indicating good performance of the model. This is also corroborated by an AUC value of 0.88. Additionally, a significant part of the curve shows an increasing true positive rate with a relatively low increase in the false positive rate, so the model may have some flexibility of the decision threshold.
