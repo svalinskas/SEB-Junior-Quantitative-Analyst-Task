@@ -175,6 +175,69 @@ plt.show()
 
 We can see that the correlation coefficients among the numerical variables are negligible, reducing concerns of multicollinearity and making it easier to interpret the features' impact if used in a model.
 
-Finally, let's also look at some categorical features. For example, we may want to visualize the outcome distributions within different groups of categorical variables. For this, a bar plot with percentages may be appropriate:
-```python
+## Modelling Task
 
+Using some features from the dataset, let's create a logistic regression model that predicts the probability that a customer has subscribed. First, we need to do some data transformations to make the data suitable for logistic regression, such as encoding categorical variables.
+
+Having imported the required libraries (pandas as pd, numpy as np) and loaded the .csv file into the dataframe 'df':
+```python
+# Using pandas' get_dummies method to encode the selected categorical variables.
+df_encoded = pd.get_dummies(df, columns=['marital', 'education', 'default', 'housing', 'loan', 'poutcome'])
+```
+
+Next, we may want to apply transformations to some numeric variables. For example, we saw that 'balance' data was very skewed, so applying a log transformation may be appropriate:
+```python
+min_balance = df_encoded['balance'].min()
+constant_added = abs(min_balance) + 1 # Calculating the constant to add to each value in the column, to ensure there are no 0 or negative values for the log transformation.
+df_encoded['log_balance'] = np.log(df_encoded['balance'] + constant_added)
+```
+Let's drop some variables that have been transformed or we will not include in the model:
+```python
+new_df = df_encoded.drop(['balance', 'job', 'contact', 'day', 'month', 'pdays'], axis=1)
+```
+We can now split the dataset into training and testing sets:
+```python
+from sklearn.model_selection import train_test_split
+y = new_df['y'] # Isolating the outcome variable
+x = new_df.drop['y', axis=1] # Isolating the features
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+```
+Finally, we can create and evaluate the model:
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+logreg = LogisticRegression()
+logreg.fit(x_train, y_train)
+y_pred = logreg.predict(x_test)
+y_pred_proba = logreg.predict_proba(x_test)
+accuracy = accuracy_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+```
+Lets check the accuracy and confusion matrix:
+```python
+print(accuracy)
+0.8964945261528254
+print(conf_matrix)
+[[7770  182]
+ [ 754  337]]
+```
+As we can see, the accuracy of the model is fairly high, and false positives and false negatives appear acceptable at first glance.
+
+To sum up, lets visualize an ROC curve to see how the model performs:
+```python
+from sklearn.metrics import roc_curve, auc
+import matplotlib.pyplot as plt
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba[:, 1], pos_label='yes')
+roc_auc = auc(fpr, tpr)
+plt.figure()
+plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic')
+plt.legend(loc="lower right")
+plt.show()
+```
