@@ -145,4 +145,15 @@ The dataset is thus sorted by education in ascending order, by age in descending
 
 ## Data Visualization Task
 
-Let's return to the original dataset and visualize some of its data.
+Let's return to the original dataset and visualize some of its data. We'll be needing pandas, matplotlib, and seaborn:
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
+First, we can try and see the relationship between, age, balance, and the subscription outcome variable. We can visualize their distributions and relationships using a pairplot:
+```python
+data = pd.read_csv('/Users/sarunas/Desktop/bank-full.csv', delimiter = ';')
+plot_features = ['age', 'balance', 'y']
+pairplot_figure = sns.pairplot(data[plot_features], hue='y', plot_kws={'alpha':0.6, 's':30})
+```
