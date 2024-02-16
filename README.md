@@ -1,6 +1,6 @@
 # SEB Junior Quantitative Analyst Task
 
-Here are the three tasks, each of which may be completed independently of the others:
+Here are three tasks, each of which may be completed independently of the others:
 
 1) Data Manipulation Task:
   - Select a random subsample of the dataset;
@@ -55,11 +55,52 @@ Next, let's filter the desired rows using a simple condition:
 ```python
 clients_with_loan = df[df['loan'] == 'yes']
 ```
-For more complex filtering, for example, clients with a balance, we can use the query method:
+For more complex filtering, for example, clients with a balance of at least 1000, no personal loan, and older than 40, we can use the query method to filter with one string:
 ```python
-queried_data = df.query['balance > 1000 & loan == 'no'
+queried_sample = df.query['balance>=1000 & loan=='no' & age>40')
 ```
-We can drop some unnecessary columns and rename others:
+If we deem some columns as unnecessary, we can drop some them, and also rename others:
 ```python
-df = df.drop(columns='day', 'month']
-df = df.rename(columns={'balance':'account_balance', 'y':'subscribed'}) 
+df_cleaned = (df
+              .drop(columns=['contact', 'day', 'month'])
+              .rename(columns={'balance':'account_balance', 'y':'subscribed'})
+              )
+```
+We can then use the describe method to retrieve some summarizing statistics for the whole subsample:
+```python
+sample_statistics = df_cleaned.describe()
+print(sample_statistics)
+                age  account_balance  ...         pdays      previous
+count  45211.000000     45211.000000  ...  45211.000000  45211.000000
+mean      40.936210      1362.272058  ...     40.197828      0.580323
+std       10.618762      3044.765829  ...    100.128746      2.303441
+min       18.000000     -8019.000000  ...     -1.000000      0.000000
+25%       33.000000        72.000000  ...     -1.000000      0.000000
+50%       39.000000       448.000000  ...     -1.000000      0.000000
+75%       48.000000      1428.000000  ...     -1.000000      0.000000
+max       95.000000    102127.000000  ...    871.000000    275.000000
+```
+We can also aggregate by some groups and retrieve some more specific statistics:
+```python
+grouped_statistics = df_cleaned.groupby('job').agg({
+                     'account_balance': ['mean', 'median', 'std'],
+                     'age': ['min', 'max'],
+                     'duration': ['mean', 'sum']
+                     })
+print(grouped_statistics)
+              account_balance                     age        duration         
+                         mean median          std min max        mean      sum
+job                                                                           
+admin.            1135.838909  396.0  2641.962686  20  75  246.896732  1276703
+blue-collar       1078.826654  388.0  2240.523208  20  75  262.901562  2558558
+entrepreneur      1521.470074  352.0  4153.442626  21  84  256.309348   381132
+housemaid         1392.395161  406.0  2984.692098  22  83  245.825000   304823
+management        1763.616832  572.0  3822.965605  21  81  253.995771  2402292
+retired           1984.215106  787.0  4397.044177  24  95  287.361307   650586
+self-employed     1647.970868  526.0  3684.259573  22  76  268.157061   423420
+services           997.088108  339.5  2164.493505  20  69  259.318729  1077210
+student           1388.060768  502.0  2441.703526  18  48  246.656716   231364
+technician        1252.632092  421.0  2548.544019  21  71  252.904962  1921319
+unemployed        1521.745971  529.0  3144.666754  21  66  288.543361   375972
+unknown           1772.357639  677.0  2970.288559  25  82  237.611111    68432
+```
