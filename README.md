@@ -1,4 +1,4 @@
-![image](https://github.com/svalinskas/SEB-Junior-Quantitative-Analyst-Task/assets/123397350/3b524e32-8bb8-4618-9b05-326ab33c821f)# SEB Junior Quantitative Analyst Task
+# SEB Junior Quantitative Analyst Task
 
 Here are three tasks, each of which may be completed independently of the others:
 
