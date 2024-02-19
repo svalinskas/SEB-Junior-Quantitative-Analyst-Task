@@ -199,7 +199,7 @@ We can now split the dataset into training and testing sets:
 ```python
 from sklearn.model_selection import train_test_split
 y = new_df['y'] # Isolating the outcome variable
-x = new_df.drop['y', axis=1] # Isolating the features
+x = new_df.drop('y', axis=1) # Isolating the features
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 ```
 Finally, we can create and evaluate the model:
